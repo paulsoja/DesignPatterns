@@ -3,6 +3,10 @@ package com.paulsoja.patterns
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import com.paulsoja.patterns.behavioral.strategy.CarBookingStrategy
+import com.paulsoja.patterns.behavioral.strategy.Customer
+import com.paulsoja.patterns.behavioral.strategy.TrainBookingStrategy
+import com.paulsoja.patterns.behavioral.strategy.variants.Printer
 import com.paulsoja.patterns.creational.builder.Builder
 import com.paulsoja.patterns.creational.builder.Product
 import com.paulsoja.patterns.creational.factory.StandardFileParserFactory
@@ -69,6 +73,44 @@ class MainActivity : AppCompatActivity() {
         val translationManager = TranslationManager()
         translationManager.translate("Some text", Language.English, Language.Italian)
         translationManager.translate("Some text", Language.English, Language.French)
+    }
+
+    private fun useStrategy() {
+        /*
+        In the Strategy pattern, we create objects which represent various strategies and
+        a context object whose behavior varies as per its strategy object. The strategy object
+        changes the executing algorithm of the context object.
+        */
+
+        //CarBooking Strategy
+        val cust = Customer(CarBookingStrategy())
+        var fare = cust.calculateFare(5)
+        println(fare)
+
+        //TrainBooking Strategy
+        cust.bookingStrategy = TrainBookingStrategy()
+        fare = cust.calculateFare(5)
+        println(fare)
+
+        //output
+        //Calculating fares using CarBookingStrategy
+        //62.5
+        //Calculating fares using TrainBookingStrategy
+        //42.5
+    }
+
+    private fun useVariantStrategy() {
+        val lowerCaseFormatter: (String) -> String = String::toLowerCase
+        val upperCaseFormatter: (String) -> String = String::toUpperCase
+
+        val lower = Printer(strategy = lowerCaseFormatter)
+        println(lower.print("O tempora, o mores!"))
+        val upper = Printer(strategy = upperCaseFormatter)
+        println(upper.print("O tempora, o mores!"))
+
+        //output
+        //o tempora, o mores!
+        //O TEMPORA, O MORES!
     }
 
 }
