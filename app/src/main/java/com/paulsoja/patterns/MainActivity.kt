@@ -3,6 +3,8 @@ package com.paulsoja.patterns
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import com.paulsoja.patterns.behavioral.memento.CareTaker
+import com.paulsoja.patterns.behavioral.memento.Originator
 import com.paulsoja.patterns.behavioral.strategy.CarBookingStrategy
 import com.paulsoja.patterns.behavioral.strategy.Customer
 import com.paulsoja.patterns.behavioral.strategy.TrainBookingStrategy
@@ -14,6 +16,10 @@ import com.paulsoja.patterns.creational.prototype.Film
 import com.paulsoja.patterns.structural.adapter.CurrencyConverterAdapter
 import com.paulsoja.patterns.structural.adapter.CurrencyToDollarConverter
 import com.paulsoja.patterns.structural.adapter.CurrencyToEuroConverter
+import com.paulsoja.patterns.structural.composite.Cabbinet
+import com.paulsoja.patterns.structural.composite.FloppyDisk
+import com.paulsoja.patterns.structural.composite.HardDrive
+import com.paulsoja.patterns.structural.composite.Memory
 import com.paulsoja.patterns.structural.facade.Language
 import com.paulsoja.patterns.structural.facade.TranslationManager
 
@@ -111,6 +117,42 @@ class MainActivity : AppCompatActivity() {
         //output
         //o tempora, o mores!
         //O TEMPORA, O MORES!
+    }
+
+    private fun useComposite() {
+        val cabbinet = Cabbinet()
+        cabbinet.add(FloppyDisk())
+        cabbinet.add(HardDrive())
+        cabbinet.add(Memory())
+        println(cabbinet.getPrice())
+
+        //output 600
+    }
+
+    private fun useMemento() {
+        val originator = Originator("initial state")
+        val careTaker = CareTaker()
+        careTaker.saveState(originator.createMemento())
+
+        originator.state = "State #1"
+        originator.state = "State #2"
+        careTaker.saveState(originator.createMemento())
+
+        originator.state = "State #3"
+        println("Current State: " + originator.state)
+        //assertThat(originator.state).isEqualTo("State #3")
+
+        originator.restore(careTaker.restore(1))
+        println("Second saved state: " + originator.state)
+        //assertThat(originator.state).isEqualTo("State #2")
+
+        originator.restore(careTaker.restore(0))
+        println("First saved state: " + originator.state)
+
+        //output
+        //Current State: State #3
+        //Second saved state: State #2
+        //First saved state: initial state
     }
 
 }
